@@ -1,35 +1,49 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { By } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
 
 describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
+        FormsModule, BrowserAnimationsModule
       ],
       declarations: [
         AppComponent
       ],
     }).compileComponents();
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
-  it(`should have as title 'moving-animation'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('moving-animation');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+  it('Should succeed', () => {
+    const spyDocumentClick = spyOn(component, 'onClick').and.callThrough();
+    
     fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('moving-animation app is running!');
+    const pageX = 100;
+    const pageY = 150;
+    const event = new MouseEvent('click',
+    {
+        view: window,
+        relatedTarget: document,
+        clientX: pageX,
+        clientY: pageY
+
+    });
+    component.onClick(event);
+    fixture.detectChanges();
+    
+    const squarebox = fixture.debugElement.query(By.css('.squarebox'));
+    expect(squarebox.nativeElement.offsetLeft).toEqual(pageX);
   });
 });
